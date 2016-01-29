@@ -1,27 +1,5 @@
-# java-getting-started
-
-A barebones Java app, which can easily be deployed to Heroku.  
-
-This application support the [Getting Started with Java on Heroku](https://devcenter.heroku.com/articles/getting-started-with-java) article - check it out.
-
-## Running Locally
-
-Make sure you have Java and Maven installed.  Also, install the [Heroku Toolbelt](https://toolbelt.heroku.com/).
-
-```sh
-$ git clone https://github.com/heroku/java-getting-started.git
-$ cd java-getting-started
-$ mvn install
-$ foreman start web
-```
-
-Your app should now be running on [localhost:5000](http://localhost:5000/).
-
-If you're going to use a database, ensure you have a local `.env` file that reads something like this:
-
-```
-DATABASE_URL=postgres://localhost:5432/java_database_name
-```
+# slack-eventbrite
+Uses Slack's webhooks and EventBrite API to track orders from an EventBrite's event.
 
 ## Deploying to Heroku
 
@@ -31,8 +9,7 @@ $ git push heroku master
 $ heroku open
 ```
 
-## Documentation
-
-For more information about using Java on Heroku, see these Dev Center articles:
-
-- [Java on Heroku](https://devcenter.heroku.com/categories/java)
+You also have to set the following environment variables in heroku :
+* EVENT_ID : ID for the event you want to track (on EventBrite)
+* EVENTBRITE_TOKEN : Required token to use EventBrite's REST API
+* SLACK_WEBHOOK_URL : Your Slack's webhook payload URL
