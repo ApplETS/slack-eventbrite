@@ -62,7 +62,7 @@ public class Main {
                     text += "\n";
                 }
 
-                return text;
+                return "{\"text\": \"" + text + "\"}";
             } else {
                 halt(401, "Not Authorized");
             }
