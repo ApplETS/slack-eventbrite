@@ -10,6 +10,7 @@ import model.Attendee;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gnut3ll4 on 29/01/16.
@@ -35,10 +36,10 @@ public class RequestsUtils {
         JsonObject pagination = rootObject.getAsJsonObject("pagination");
         int pageCount = pagination.get("page_count").getAsInt();
 
-        JsonObject attendeesObject = rootObject.getAsJsonObject("attendees");
+        JsonElement attendeesObject = rootObject.getAsJsonArray("attendees");
 
         attendees.addAll(new Gson().fromJson(attendeesObject,
-                new TypeToken<ArrayList<Attendee>>() {
+                new TypeToken<List<Attendee>>() {
                 }.getType()));
 
         if (pageNumber < pageCount) {

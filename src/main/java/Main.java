@@ -30,26 +30,28 @@ public class Main {
         port(Integer.valueOf(System.getenv("PORT")));
         staticFileLocation("/public");
 
-        get("attendees", (req, res) -> {
+        get("/attendees", (req, res) -> {
 
             String text = "";
 
             if (req.queryParams("token").equals(System.getenv(Constants.SLACK_VERIFICATION_TOKEN))) {
-                ArrayList<Attendee> attendees = new ArrayList<>();
-                attendees = RequestsUtils.getAttendees(1, attendees);
+                ArrayList<Attendee> attendees = RequestsUtils.getAttendees(1, new ArrayList<>());
 
                 HashMap<String, HashMap<String, Integer>> mapQuestion = new HashMap<>();
 
                 HashMap<String, Integer> mapAnswer;
                 int answerCount;
                 for (Attendee attendee : attendees) {
-                    for (Answer answer : attendee.getAnswers()) {
-                        if (answer.getType().equals("multiple_choice")) {
+                    if (!attendee.getCancelled()) {
+                        for (Answer answer : attendee.getAnswers()) {
 
-                            mapAnswer = mapQuestion.getOrDefault(answer.getQuestionId(), new HashMap<>());
-                            answerCount = mapAnswer.getOrDefault(answer.getAnswer(), 0);
-                            mapAnswer.put(answer.getAnswer(), answerCount++);
-                            mapQuestion.put(answer.getQuestionId(), mapAnswer);
+                            if (answer.getType().equals("multiple_choice")) {
+
+                                mapAnswer = mapQuestion.getOrDefault(answer.getQuestion(), new HashMap<>());
+                                answerCount = mapAnswer.getOrDefault(answer.getAnswer(), 0);
+                                mapAnswer.put(answer.getAnswer(), answerCount + 1);
+                                mapQuestion.put(answer.getQuestion(), mapAnswer);
+                            }
                         }
                     }
                 }
@@ -67,7 +69,7 @@ public class Main {
                 halt(401, "Not Authorized");
             }
 
-            return null;
+            return "Not Authorized";
 
         });
 
