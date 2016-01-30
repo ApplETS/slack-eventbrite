@@ -34,7 +34,7 @@ public class Main {
 
             String text = "";
 
-            if (req.attribute("token").equals(System.getenv(Constants.SLACK_VERIFICATION_TOKEN))) {
+            if (req.queryParams("token").equals(System.getenv(Constants.SLACK_VERIFICATION_TOKEN))) {
                 ArrayList<Attendee> attendees = new ArrayList<>();
                 attendees = RequestsUtils.getAttendees(1, attendees);
 
