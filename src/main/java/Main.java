@@ -64,12 +64,15 @@ public class Main {
                     text += "\n";
                 }
 
-                return "{\"text\": \"" + text + "\"}";
+                RequestsUtils.sendMessageToSlack(text);
+
+                halt(200);
             } else {
                 halt(401, "Not Authorized");
             }
 
-            return "Not Authorized";
+            halt(501);
+            return null;
 
         });
 
@@ -101,19 +104,7 @@ public class Main {
                         ticketClass.get("quantity_total").getAsInt() + "\n";
             }
 
-            client = new OkHttpClient();
-
-            MediaType mediaType = MediaType.parse("application/json");
-            RequestBody body = RequestBody.create(mediaType, "{\"text\": \"" + text + "\"}");
-            request = new Request.Builder()
-                    .url(System.getenv(Constants.SLACK_WEBHOOK_URL))
-                    .post(body)
-                    .addHeader("content-type", "application/json")
-                    .addHeader("cache-control", "no-cache")
-                    .build();
-
-            response = client.newCall(request).execute();
-
+            RequestsUtils.sendMessageToSlack(text);
             return text;
         });
     }

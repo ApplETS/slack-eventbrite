@@ -3,9 +3,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import com.squareup.okhttp.*;
 import model.Attendee;
 
 import java.io.IOException;
@@ -47,5 +45,21 @@ public class RequestsUtils {
         }
 
         return attendees;
+    }
+
+    public static void sendMessageToSlack(String message) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, "{\"text\": \"" + message + "\"}");
+        Request request = new Request.Builder()
+                .url(System.getenv(Constants.SLACK_WEBHOOK_URL))
+                .post(body)
+                .addHeader("content-type", "application/json")
+                .addHeader("cache-control", "no-cache")
+                .build();
+
+        Response response = client.newCall(request).execute();
+
     }
 }
