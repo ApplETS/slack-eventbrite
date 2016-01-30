@@ -41,10 +41,11 @@ public class RequestsUtils {
                 }.getType()));
 
         if (pageNumber < pageCount) {
-            attendees.addAll(getAttendees(pageNumber + 1, attendees));
+            return getAttendees(pageNumber + 1, attendees);
+        } else {
+            return attendees;
         }
 
-        return attendees;
     }
 
     public static void sendMessageToSlack(String message) throws IOException {
