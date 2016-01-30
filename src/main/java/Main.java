@@ -24,12 +24,20 @@ public class Main {
         port(Integer.valueOf(System.getenv("PORT")));
         staticFileLocation("/public");
 
+//        post("attendees", (req, res) -> {
+//            return null;
+//
+//        });
+
         post("/hello", (req, res) -> {
 
             OkHttpClient client = new OkHttpClient();
 
             Request request = new Request.Builder()
-                    .url("https://www.eventbriteapi.com/v3/events/" + System.getenv("EVENT_ID") + "/ticket_classes/?token=" + System.getenv("EVENTBRITE_TOKEN"))
+                    .url("https://www.eventbriteapi.com/v3/events/" +
+                            System.getenv(Constants.EVENT_ID) +
+                            "/ticket_classes/?token=" +
+                            System.getenv(Constants.EVENTBRITE_TOKEN))
                     .get()
                     .addHeader("cache-control", "no-cache")
                     .build();
@@ -54,7 +62,7 @@ public class Main {
             MediaType mediaType = MediaType.parse("application/json");
             RequestBody body = RequestBody.create(mediaType, "{\"text\": \"" + text + "\"}");
             request = new Request.Builder()
-                    .url(System.getenv("SLACK_WEBHOOK_URL"))
+                    .url(System.getenv(Constants.SLACK_WEBHOOK_URL))
                     .post(body)
                     .addHeader("content-type", "application/json")
                     .addHeader("cache-control", "no-cache")
