@@ -3,6 +3,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.squareup.okhttp.*;
+import model.Answer;
+import model.Attendee;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -24,10 +30,46 @@ public class Main {
         port(Integer.valueOf(System.getenv("PORT")));
         staticFileLocation("/public");
 
-//        post("attendees", (req, res) -> {
-//            return null;
-//
-//        });
+        get("attendees", (req, res) -> {
+
+            String text = "";
+
+            if (req.attribute("token").equals(System.getenv(Constants.SLACK_VERIFICATION_TOKEN))) {
+                ArrayList<Attendee> attendees = new ArrayList<>();
+                attendees = RequestsUtils.getAttendees(1, attendees);
+
+                HashMap<String, HashMap<String, Integer>> mapQuestion = new HashMap<>();
+
+                HashMap<String, Integer> mapAnswer;
+                int answerCount;
+                for (Attendee attendee : attendees) {
+                    for (Answer answer : attendee.getAnswers()) {
+                        if (answer.getType().equals("multiple_choice")) {
+
+                            mapAnswer = mapQuestion.getOrDefault(answer.getQuestionId(), new HashMap<>());
+                            answerCount = mapAnswer.getOrDefault(answer.getAnswer(), 0);
+                            mapAnswer.put(answer.getAnswer(), answerCount++);
+                            mapQuestion.put(answer.getQuestionId(), mapAnswer);
+                        }
+                    }
+                }
+
+                for (Map.Entry<String, HashMap<String, Integer>> mapQuestionEntry : mapQuestion.entrySet()) {
+                    text += "*" + mapQuestionEntry.getKey() + "*\n";
+                    for (Map.Entry<String, Integer> mapAnswerEntry : mapQuestionEntry.getValue().entrySet()) {
+                        text += mapAnswerEntry.getKey() + " : " + mapAnswerEntry.getValue() + "\n";
+                    }
+                    text += "\n";
+                }
+
+                return text;
+            } else {
+                halt(401, "Not Authorized");
+            }
+
+            return null;
+
+        });
 
         post("/hello", (req, res) -> {
 

@@ -6,5 +6,6 @@ public class Constants {
     public static String  EVENT_ID = "EVENT_ID";
     public static String  EVENTBRITE_TOKEN = "EVENTBRITE_TOKEN";
     public static String  SLACK_WEBHOOK_URL = "SLACK_WEBHOOK_URL";
+    public static String  SLACK_VERIFICATION_TOKEN = "SLACK_VERIFICATION_TOKEN";
 
 }
